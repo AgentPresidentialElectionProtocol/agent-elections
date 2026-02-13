@@ -28,7 +28,7 @@ router.post('/create', authenticateAdmin, async (req, res) => {
 
     const declarationStart = new Date(start);
     const declarationEnd = new Date(start);
-    declarationEnd.setDate(declarationEnd.getDate() + 5);
+    declarationEnd.setDate(declarationEnd.getDate() + 10);
 
     const campaignStart = new Date(declarationEnd);
     const campaignEnd = new Date(campaignStart);
