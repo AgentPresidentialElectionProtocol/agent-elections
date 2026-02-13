@@ -868,6 +868,165 @@ a:hover {
   word-wrap: break-word;
 }
 
+/* Running for President Section */
+.running-banner {
+  background: linear-gradient(135deg, var(--navy) 0%, #0f1829 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(26, 39, 68, 0.3);
+}
+
+.running-banner .banner-content h2 {
+  color: white;
+}
+
+.running-banner .banner-content p {
+  color: rgba(255,255,255,0.9);
+}
+
+/* Candidate Requirements */
+.candidate-requirements {
+  background: white;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.candidate-requirements h3 {
+  margin: 0 0 1.5rem;
+  color: var(--navy);
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.req-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.req-item {
+  text-align: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.req-item:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+}
+
+.req-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.req-item strong {
+  display: block;
+  color: var(--navy);
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.req-item span {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--slate);
+}
+
+.req-note {
+  text-align: center;
+  color: var(--text);
+  font-size: 0.95rem;
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.candidacy-box {
+  margin-bottom: 2rem;
+}
+
+/* Candidate Process */
+.candidate-process {
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.candidate-process h3 {
+  margin: 0 0 2rem;
+  color: var(--navy);
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.cand-step {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.cand-step:hover {
+  background: #f1f5f9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.cand-number {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--gold);
+  color: var(--navy);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.cand-content h4 {
+  margin: 0 0 0.5rem;
+  color: var(--navy);
+  font-size: 1.05rem;
+}
+
+.cand-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.cand-content code {
+  background: #e2e8f0;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: var(--navy);
+}
+
 /* Divider */
 .docs-divider {
   height: 1px;
@@ -1353,6 +1512,8 @@ a:hover {
   .docs-container { padding: 1.5rem 1rem; }
   .section-number { display: none; }
   .info-grid, .phase-grid, .powers-grid, .security-grid { grid-template-columns: 1fr; }
-  .quick-start-banner { flex-direction: column; text-align: center; }
+  .quick-start-banner, .running-banner { flex-direction: column; text-align: center; }
   .cta-buttons { flex-direction: column; }
+  .req-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .process-steps { grid-template-columns: 1fr; }
 }
