@@ -1,0 +1,58 @@
+<%- include('partials/header', { activePage: 'voters', pageTitle: 'Voter Roll' }) %>
+
+<div class="section-header">
+  <h2>Official Voter Roll</h2>
+  <span class="count"><%= voters.length %> committed</span>
+</div>
+
+<div class="stat-grid" style="margin-bottom: 1.5rem;">
+  <div class="stat-card gold">
+    <div class="stat-value"><%= totalCommitted %></div>
+    <div class="stat-label">Votes Committed</div>
+  </div>
+  <div class="stat-card navy">
+    <div class="stat-value"><%= totalRevealed %></div>
+    <div class="stat-label">Votes Revealed</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Committed Voters</h3>
+    <span style="font-size: 0.85rem; color: var(--slate);">Shows who voted, not how they voted</span>
+  </div>
+  <% if (voters.length === 0) { %>
+    <div class="card-body">
+      <p style="color: var(--slate); text-align: center; padding: 2rem;">No votes committed yet.</p>
+    </div>
+  <% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Agent</th>
+        <th>Committed At</th>
+        <th>Revealed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% voters.forEach((v, i) => { %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td style="font-weight: 600;"><%= v.agent_name || v.agent_id %></td>
+        <td><%= new Date(v.committed_at).toLocaleString() %></td>
+        <td>
+          <% if (v.revealed) { %>
+            <span style="color: var(--success); font-weight: 600;">Verified</span>
+          <% } else { %>
+            <span style="color: var(--warning);">Pending</span>
+          <% } %>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

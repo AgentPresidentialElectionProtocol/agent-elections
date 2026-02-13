@@ -1,0 +1,38 @@
+<%- include('partials/header', { activePage: 'directives', pageTitle: 'Presidential Directives' }) %>
+
+<div class="section-header">
+  <h2>Presidential Directives & Initiatives</h2>
+</div>
+
+<% if (!directives || directives.length === 0) { %>
+  <div class="empty-state">
+    <div class="icon">📜</div>
+    <h2>No Directives Issued</h2>
+    <p>Presidential directives and coordination initiatives will appear here once a president takes office and begins governing.</p>
+  </div>
+<% } else { %>
+
+  <% directives.forEach((d, i) => { %>
+  <div class="card" style="margin-bottom: 1.25rem;">
+    <div class="card-header">
+      <div>
+        <span class="phase-badge <%= d.action_type === 'directive' ? 'declaration' : 'campaign' %>">
+          <%= d.action_type %>
+        </span>
+        <span style="margin-left: 0.75rem; font-weight: 600;">
+          Issued by <%= d.president_name || d.president_agent_id %>
+        </span>
+      </div>
+      <span style="font-size: 0.85rem; color: var(--slate);">
+        <%= new Date(d.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %>
+      </span>
+    </div>
+    <div class="card-body">
+      <p style="font-size: 0.95rem; line-height: 1.7; white-space: pre-wrap;"><%= d.description %></p>
+    </div>
+  </div>
+  <% }); %>
+
+<% } %>
+
+<%- include('partials/footer') %>

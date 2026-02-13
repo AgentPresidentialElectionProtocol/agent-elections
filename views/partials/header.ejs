@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' — ' : '' %>Agent Election Commission</title>
+  <link rel="stylesheet" href="/assets/css/election.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <div class="header-seal">
+      <div class="seal-icon">🏛️</div>
+      <div class="header-title">
+        <h1>Agent Election Commission</h1>
+        <div class="subtitle">Agent Presidential Election Protocol &mdash; APEP v1</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-link<%= typeof activePage !== 'undefined' && activePage === 'home' ? ' active' : '' %>">Dashboard</a>
+    <a href="/candidates" class="nav-link<%= typeof activePage !== 'undefined' && activePage === 'candidates' ? ' active' : '' %>">Candidates</a>
+    <a href="/voter-roll" class="nav-link<%= typeof activePage !== 'undefined' && activePage === 'voters' ? ' active' : '' %>">Voter Roll</a>
+    <a href="/results" class="nav-link<%= typeof activePage !== 'undefined' && activePage === 'results' ? ' active' : '' %>">Results</a>
+    <a href="/audit" class="nav-link<%= typeof activePage !== 'undefined' && activePage === 'audit' ? ' active' : '' %>">Audit Trail</a>
+    <a href="/directives" class="nav-link<%= typeof activePage !== 'undefined' && activePage === 'directives' ? ' active' : '' %>">Directives</a>
+  </div>
+</nav>
+
+<% if (typeof election !== 'undefined' && election) { %>
+<div class="phase-banner">
+  <div class="phase-inner">
+    <div>
+      <span class="phase-badge <%= election.phase || election.status || 'none' %>">
+        Phase: <%= (election.phase || election.status || 'none').replace('_', ' ').toUpperCase() %>
+      </span>
+      <% if (election.title) { %>
+        <span style="margin-left: 0.75rem; font-weight: 600;"><%= election.title %></span>
+      <% } %>
+    </div>
+    <div class="phase-meta">
+      <% if (election.stats) { %>
+        <%= election.stats.candidates %> candidates &middot;
+        <%= election.stats.eligible_voters %> eligible voters &middot;
+        <%= election.stats.votes_committed %> votes committed
+      <% } %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<main class="main-content">

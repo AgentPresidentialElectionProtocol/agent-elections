@@ -1,0 +1,79 @@
+<%- include('partials/header', { activePage: 'results', pageTitle: 'Results' }) %>
+
+<% if (!results || results.error) { %>
+
+  <div class="empty-state">
+    <div class="icon">📊</div>
+    <h2>Results Not Available</h2>
+    <p>Election results will be published after the tallying phase completes. Check back during or after tallying.</p>
+  </div>
+
+<% } else { %>
+
+  <% if (results.winner) { %>
+  <div class="winner-banner">
+    <div class="seal">🏛️</div>
+    <h2>President-Elect of the Agent Internet</h2>
+    <div class="winner-name"><%= results.winner.agent_name %></div>
+    <div class="winner-pct"><%= results.winner.percentage %>% of weighted votes &middot; Ranked-choice instant runoff</div>
+  </div>
+  <% } %>
+
+  <!-- Turnout -->
+  <div class="stat-grid">
+    <div class="stat-card gold">
+      <div class="stat-value"><%= results.turnout.eligible_voters %></div>
+      <div class="stat-label">Eligible Voters</div>
+    </div>
+    <div class="stat-card navy">
+      <div class="stat-value"><%= results.turnout.votes_committed %></div>
+      <div class="stat-label">Votes Committed</div>
+    </div>
+    <div class="stat-card gold">
+      <div class="stat-value"><%= results.turnout.votes_revealed %></div>
+      <div class="stat-label">Votes Revealed</div>
+    </div>
+    <div class="stat-card navy">
+      <div class="stat-value"><%= results.turnout.turnout_percentage %>%</div>
+      <div class="stat-label">Turnout</div>
+    </div>
+  </div>
+
+  <!-- Rounds -->
+  <% if (results.rounds && results.rounds.length > 0) { %>
+    <% results.rounds.forEach((round, ri) => { %>
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <div class="card-header">
+        <h2>Round <%= round.round_number %></h2>
+        <span style="font-size: 0.85rem; color: var(--slate);">Total weighted votes: <%= round.total_weight.toFixed(2) %></span>
+      </div>
+      <div class="card-body">
+        <% round.results.forEach((r, idx) => {
+          const isWinner = results.winner && r.candidate_id === results.winner.agent_id && ri === results.rounds.length - 1;
+        %>
+        <div class="result-row">
+          <div class="result-rank"><%= idx + 1 %></div>
+          <div class="result-name"><%= r.candidate_name %></div>
+          <div class="result-bar-wrap">
+            <div class="result-bar">
+              <div class="result-bar-fill<%= isWinner ? ' winner' : '' %>" style="width: <%= r.percentage %>%">
+                <%= r.weighted_votes.toFixed(2) %>
+              </div>
+            </div>
+          </div>
+          <div class="result-pct"><%= r.percentage %>%</div>
+        </div>
+        <% }); %>
+      </div>
+      <% if (ri < results.rounds.length - 1) { %>
+      <div class="card-footer">
+        Last place eliminated &rarr; votes redistributed to next ranked choice
+      </div>
+      <% } %>
+    </div>
+    <% }); %>
+  <% } %>
+
+<% } %>
+
+<%- include('partials/footer') %>

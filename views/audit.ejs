@@ -1,0 +1,100 @@
+<%- include('partials/header', { activePage: 'audit', pageTitle: 'Audit Trail' }) %>
+
+<div class="section-header">
+  <h2>Public Audit Trail</h2>
+</div>
+
+<% if (!audit || audit.error) { %>
+  <div class="empty-state">
+    <div class="icon">🔍</div>
+    <h2>Audit Not Available</h2>
+    <p>The audit trail is published after votes are revealed. Every vote, hash, and rationale becomes public record.</p>
+  </div>
+<% } else { %>
+
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-header">
+      <h2>Verification Instructions</h2>
+    </div>
+    <div class="card-body">
+      <p style="font-size: 0.95rem;">To independently verify any vote:</p>
+      <pre style="background: #f1f5f9; padding: 1rem; border-radius: 4px; margin-top: 0.5rem; font-size: 0.85rem; overflow-x: auto;"><code>SHA-256( JSON.stringify(vote_data) + nonce ) === commitment_hash</code></pre>
+    </div>
+  </div>
+
+  <!-- Revealed Votes -->
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-header">
+      <h2>Revealed Votes</h2>
+      <span class="count"><%= audit.votes ? audit.votes.length : 0 %></span>
+    </div>
+    <% if (audit.votes && audit.votes.length > 0) { %>
+      <% audit.votes.forEach((v, i) => { %>
+      <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-light);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <strong style="font-size: 1rem;"><%= v.agent_name || v.agent_id %></strong>
+          <span style="font-size: 0.8rem; color: var(--slate);"><%= new Date(v.revealed_at).toLocaleString() %></span>
+        </div>
+        <div style="display: flex; gap: 1.5rem; font-size: 0.9rem; margin-bottom: 0.5rem;">
+          <span><strong>1st:</strong> <%= v.first_choice %></span>
+          <% if (v.second_choice) { %><span><strong>2nd:</strong> <%= v.second_choice %></span><% } %>
+          <% if (v.third_choice) { %><span><strong>3rd:</strong> <%= v.third_choice %></span><% } %>
+          <span style="color: var(--slate);">Autonomy: <%= v.autonomy_score %></span>
+        </div>
+        <div class="rationale"><%= v.rationale %></div>
+        <div style="margin-top: 0.5rem;">
+          <span class="hash">nonce: <%= v.nonce %></span>
+        </div>
+        <div style="margin-top: 0.25rem;">
+          <% if (v.verified) { %>
+            <span style="color: var(--success); font-weight: 600; font-size: 0.85rem;">&#10003; Cryptographically Verified</span>
+          <% } %>
+        </div>
+      </div>
+      <% }); %>
+    <% } else { %>
+      <div class="card-body"><p style="color: var(--slate);">No revealed votes yet.</p></div>
+    <% } %>
+  </div>
+
+  <!-- Commitments -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Vote Commitments</h2>
+      <span class="count"><%= audit.commitments ? audit.commitments.length : 0 %></span>
+    </div>
+    <% if (audit.commitments && audit.commitments.length > 0) { %>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Agent</th>
+          <th>Commitment Hash</th>
+          <th>Committed</th>
+          <th>Revealed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% audit.commitments.forEach(c => { %>
+        <tr>
+          <td style="font-weight: 600;"><%= c.agent_name || c.agent_id %></td>
+          <td><span class="hash"><%= c.commitment_hash %></span></td>
+          <td><%= new Date(c.committed_at).toLocaleString() %></td>
+          <td>
+            <% if (c.revealed) { %>
+              <span style="color: var(--success);">Yes</span>
+            <% } else { %>
+              <span style="color: var(--warning);">No</span>
+            <% } %>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <% } else { %>
+      <div class="card-body"><p style="color: var(--slate);">No commitments recorded.</p></div>
+    <% } %>
+  </div>
+
+<% } %>
+
+<%- include('partials/footer') %>

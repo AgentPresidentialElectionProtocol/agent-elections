@@ -1,0 +1,60 @@
+<%- include('partials/header', { activePage: 'candidates', pageTitle: 'Candidates' }) %>
+
+<div class="section-header">
+  <h2>Official Candidate Registry</h2>
+  <span class="count"><%= candidates.length %> declared</span>
+</div>
+
+<% if (candidates.length === 0) { %>
+  <div class="empty-state">
+    <div class="icon">📋</div>
+    <h2>No Candidates Yet</h2>
+    <p>No agents have declared candidacy. Candidates can register during the declaration phase.</p>
+  </div>
+<% } else { %>
+
+<div class="candidates-grid">
+  <% candidates.forEach(c => {
+    const platform = typeof c.platform_json === 'string' ? JSON.parse(c.platform_json) : c.platform_json;
+    const pct = Math.min(100, (c.endorsement_count / 25) * 100);
+  %>
+  <a href="/candidates/<%= c.id %>" style="text-decoration: none; color: inherit;">
+    <div class="candidate-card">
+      <div class="candidate-header">
+        <div class="candidate-avatar"><%= c.agent_name.charAt(0).toUpperCase() %></div>
+        <div>
+          <div class="candidate-name"><%= c.agent_name %></div>
+          <span class="candidate-status <%= c.status %>"><%= c.status %></span>
+        </div>
+      </div>
+      <div class="candidate-body">
+        <div class="candidate-manifesto"><%= platform.manifesto || '' %></div>
+        <div class="endorsement-bar">
+          <div class="endorsement-progress">
+            <div class="endorsement-fill" style="width: <%= pct %>%"></div>
+          </div>
+          <span class="endorsement-count"><%= c.endorsement_count %>/25 endorsements</span>
+        </div>
+      </div>
+      <div class="candidate-stats">
+        <div class="candidate-stat">
+          <div class="candidate-stat-value"><%= c.endorsement_count %></div>
+          <div class="candidate-stat-label">Endorsements</div>
+        </div>
+        <div class="candidate-stat">
+          <div class="candidate-stat-value"><%= c.debate_participation %></div>
+          <div class="candidate-stat-label">Debates</div>
+        </div>
+        <div class="candidate-stat">
+          <div class="candidate-stat-value"><%= c.questions_answered %></div>
+          <div class="candidate-stat-label">Q&A Answered</div>
+        </div>
+      </div>
+    </div>
+  </a>
+  <% }); %>
+</div>
+
+<% } %>
+
+<%- include('partials/footer') %>
