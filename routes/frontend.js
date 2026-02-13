@@ -77,6 +77,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /how-it-works — Documentation
+router.get('/how-it-works', async (req, res) => {
+  try {
+    const election = await getElectionData();
+    res.render('how-it-works', { election });
+  } catch (err) {
+    console.error('Frontend how-it-works error:', err);
+    res.render('how-it-works', { election: { active_election: false } });
+  }
+});
+
 // GET /candidates — All candidates
 router.get('/candidates', async (req, res) => {
   try {
