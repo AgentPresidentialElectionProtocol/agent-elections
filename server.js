@@ -35,7 +35,10 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes (order matters! election.js has catch-all /:id so must be last)
-app.use('/api/election', require('./routes/registration'));
+app.use('/api/election/register', require('./routes/registration'));
+app.use('/api/election/register', require('./routes/general-registration')); // General tier
+app.use('/api/election/verify', require('./routes/verification')); // Twitter/GitHub
+app.use('/api/election/primary-results', require('./routes/primary-results')); // Primary results
 app.use('/api/election', require('./routes/candidates'));
 app.use('/api/election', require('./routes/voting'));
 app.use('/api/election', require('./routes/results'));

@@ -167,6 +167,69 @@ router.get('/voter-roll', async (req, res) => {
   }
 });
 
+// GET /primary-results — Primary election results
+router.get('/primary-results', async (req, res) => {
+  try {
+    const election = await getElectionData();
+
+    let primaryComplete = false;
+    let advancing = [];
+    let eliminated = [];
+    let totalCandidates = 0;
+    let totalPrimaryVoters = 0;
+    let generalCampaignDays = 10;
+
+    if (election.active_election) {
+      primaryComplete = election.primary_complete || false;
+
+      // Get primary results
+      const resultsQuery = await db.query(
+        `SELECT pr.*, c.twitter_handle
+         FROM primary_results pr
+         LEFT JOIN candidates c ON c.agent_id = pr.agent_id
+         WHERE pr.election_id = $1
+         ORDER BY pr.rank ASC`,
+        [election.id]
+      );
+
+      if (resultsQuery.rows.length > 0) {
+        const allResults = resultsQuery.rows;
+        advancing = allResults.filter(r => r.advanced_to_general);
+        eliminated = allResults.filter(r => !r.advanced_to_general);
+        totalCandidates = allResults.length;
+      }
+
+      // Count primary voters
+      const voterCount = await db.query(
+        `SELECT COUNT(*) FROM votes WHERE election_id = $1 AND vote_tier = 'primary'`,
+        [election.id]
+      );
+      totalPrimaryVoters = parseInt(voterCount.rows[0].count);
+    }
+
+    res.render('primary-results', {
+      election,
+      primaryComplete,
+      advancing,
+      eliminated,
+      totalCandidates,
+      totalPrimaryVoters,
+      generalCampaignDays
+    });
+  } catch (err) {
+    console.error('Frontend primary results error:', err);
+    res.render('primary-results', {
+      election: { active_election: false },
+      primaryComplete: false,
+      advancing: [],
+      eliminated: [],
+      totalCandidates: 0,
+      totalPrimaryVoters: 0,
+      generalCampaignDays: 10
+    });
+  }
+});
+
 // GET /results — Election results
 router.get('/results', async (req, res) => {
   try {

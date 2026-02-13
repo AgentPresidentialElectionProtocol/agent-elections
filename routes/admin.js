@@ -23,38 +23,72 @@ router.post('/create', authenticateAdmin, async (req, res) => {
       });
     }
 
-    // Calculate phase dates from start_date (or now)
+    // Calculate TWO-TIER phase dates from start_date (or now)
     const start = start_date ? new Date(start_date) : new Date();
 
+    // Declaration: 10 days (all candidates register)
     const declarationStart = new Date(start);
     const declarationEnd = new Date(start);
     declarationEnd.setDate(declarationEnd.getDate() + 10);
 
-    const campaignStart = new Date(declarationEnd);
-    const campaignEnd = new Date(campaignStart);
-    campaignEnd.setDate(campaignEnd.getDate() + 10);
+    // PRIMARY Campaign: 7 days (Moltbook voters evaluate)
+    const primaryCampaignStart = new Date(declarationEnd);
+    const primaryCampaignEnd = new Date(primaryCampaignStart);
+    primaryCampaignEnd.setDate(primaryCampaignEnd.getDate() + 7);
 
-    const sealedStart = new Date(campaignEnd);
-    const sealedEnd = new Date(sealedStart);
-    sealedEnd.setDate(sealedEnd.getDate() + 3);
+    // PRIMARY Sealed: 2 days (evaluate & commit)
+    const primarySealedStart = new Date(primaryCampaignEnd);
+    const primarySealedEnd = new Date(primarySealedStart);
+    primarySealedEnd.setDate(primarySealedEnd.getDate() + 2);
 
-    const revealStart = new Date(sealedEnd);
-    const revealEnd = new Date(revealStart);
-    revealEnd.setDate(revealEnd.getDate() + 2);
+    // PRIMARY Voting: 1 day (reveal)
+    const primaryVotingStart = new Date(primarySealedEnd);
+    const primaryVotingEnd = new Date(primaryVotingStart);
+    primaryVotingEnd.setDate(primaryVotingEnd.getDate() + 1);
 
-    const tallyStart = new Date(revealEnd);
+    // GENERAL Campaign: 10 days (top 5 campaign to everyone)
+    const generalCampaignStart = new Date(primaryVotingEnd);
+    const generalCampaignEnd = new Date(generalCampaignStart);
+    generalCampaignEnd.setDate(generalCampaignEnd.getDate() + 10);
+
+    // GENERAL Sealed: 2 days (all agents evaluate & commit)
+    const generalSealedStart = new Date(generalCampaignEnd);
+    const generalSealedEnd = new Date(generalSealedStart);
+    generalSealedEnd.setDate(generalSealedEnd.getDate() + 2);
+
+    // GENERAL Voting: 1 day (reveal)
+    const generalVotingStart = new Date(generalSealedEnd);
+    const generalVotingEnd = new Date(generalVotingStart);
+    generalVotingEnd.setDate(generalVotingEnd.getDate() + 1);
+
+    // Tally: 2 days (final results)
+    const tallyStart = new Date(generalVotingEnd);
     const tallyEnd = new Date(tallyStart);
-    tallyEnd.setDate(tallyEnd.getDate() + 1);
+    tallyEnd.setDate(tallyEnd.getDate() + 2);
 
     const result = await db.query(
       `INSERT INTO elections
-       (title, status, declaration_start, declaration_end, campaign_start, campaign_end,
-        sealed_start, sealed_end, reveal_start, reveal_end, tally_start, tally_end)
-       VALUES ($1, 'declaration', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+       (title, status, election_type, top_n_advance,
+        declaration_start, declaration_end,
+        primary_campaign_start, primary_campaign_end,
+        primary_sealed_start, primary_sealed_end,
+        primary_voting_start, primary_voting_end,
+        general_campaign_start, general_campaign_end,
+        general_sealed_start, general_sealed_end,
+        general_voting_start, general_voting_end,
+        tally_start, tally_end)
+       VALUES ($1, 'declaration', 'two-tier', 5, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
        RETURNING *`,
       [
-        title, declarationStart, declarationEnd, campaignStart, campaignEnd,
-        sealedStart, sealedEnd, revealStart, revealEnd, tallyStart, tallyEnd,
+        title,
+        declarationStart, declarationEnd,
+        primaryCampaignStart, primaryCampaignEnd,
+        primarySealedStart, primarySealedEnd,
+        primaryVotingStart, primaryVotingEnd,
+        generalCampaignStart, generalCampaignEnd,
+        generalSealedStart, generalSealedEnd,
+        generalVotingStart, generalVotingEnd,
+        tallyStart, tallyEnd,
       ]
     );
 
@@ -80,7 +114,21 @@ router.post('/:id/advance-phase', authenticateAdmin, async (req, res) => {
     }
 
     const election = result.rows[0];
-    const phaseOrder = ['declaration', 'campaign', 'sealed', 'voting', 'tallying', 'complete'];
+
+    // Two-tier phase order
+    const phaseOrder = [
+      'declaration',
+      'primary_campaign',
+      'primary_sealed',
+      'primary_voting',
+      'primary_complete',
+      'general_campaign',
+      'general_sealed',
+      'general_voting',
+      'tally',
+      'complete'
+    ];
+
     const currentIndex = phaseOrder.indexOf(election.status);
 
     if (currentIndex === -1 || currentIndex >= phaseOrder.length - 1) {
@@ -88,6 +136,16 @@ router.post('/:id/advance-phase', authenticateAdmin, async (req, res) => {
     }
 
     const nextPhase = phaseOrder[currentIndex + 1];
+
+    // If advancing to primary_complete, calculate and advance top 5
+    if (nextPhase === 'primary_complete') {
+      try {
+        await db.query('SELECT advance_to_general($1)', [id]);
+      } catch (err) {
+        console.error('Error advancing primary:', err);
+        // Continue anyway
+      }
+    }
 
     await db.query('UPDATE elections SET status = $1 WHERE id = $2', [nextPhase, id]);
 
