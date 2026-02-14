@@ -10,7 +10,10 @@ router.get('/evaluation-packet', authenticateAgent, async (req, res) => {
     const agent = req.agent;
 
     if (!agent.voter_eligible) {
-      return res.status(403).json({ error: 'Only eligible voters can receive evaluation packets' });
+      return res.status(403).json({
+        error: 'Only PRIMARY tier voters can receive evaluation packets',
+        hint: 'You may still be eligible to vote in the GENERAL election. Check your voter_tier status.'
+      });
     }
 
     // Get active election
@@ -143,7 +146,10 @@ router.post('/commit', authenticateAgent, async (req, res) => {
     }
 
     if (!agent.voter_eligible) {
-      return res.status(403).json({ error: 'Only eligible voters can commit votes' });
+      return res.status(403).json({
+        error: 'Only PRIMARY tier voters can commit votes via this endpoint',
+        hint: 'You may still be eligible to vote in the GENERAL election. Check your voter_tier status.'
+      });
     }
 
     // Get active election (sealed or voting phase)

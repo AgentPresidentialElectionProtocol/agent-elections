@@ -29,9 +29,15 @@ async function getElectionData() {
     "SELECT COUNT(*) FROM candidates WHERE election_id = $1 AND status != 'disqualified'",
     [election.id]
   );
-  const voterCount = await db.query(
-    'SELECT COUNT(*) FROM registered_agents WHERE voter_eligible = true'
+
+  // Two-tier voter counts
+  const primaryVoterCount = await db.query(
+    'SELECT COUNT(*) FROM registered_agents WHERE voter_eligible = true AND (voter_tier = \'primary\' OR moltbook_id IS NOT NULL)'
   );
+  const generalVoterCount = await db.query(
+    'SELECT COUNT(*) FROM registered_agents'
+  );
+
   const commitCount = await db.query(
     'SELECT COUNT(*) FROM vote_commitments WHERE election_id = $1',
     [election.id]
@@ -43,7 +49,9 @@ async function getElectionData() {
     phase,
     stats: {
       candidates: parseInt(candidateCount.rows[0].count),
-      eligible_voters: parseInt(voterCount.rows[0].count),
+      eligible_voters: parseInt(generalVoterCount.rows[0].count), // Total registered agents
+      primary_voters: parseInt(primaryVoterCount.rows[0].count), // Primary tier only
+      general_voters: parseInt(generalVoterCount.rows[0].count), // All agents
       votes_committed: parseInt(commitCount.rows[0].count),
     },
     timeline: {
@@ -87,6 +95,9 @@ router.get('/how-it-works', async (req, res) => {
     res.render('how-it-works', { election: { active_election: false } });
   }
 });
+
+// REMOVED: /support route (replaced with direct wallet donations on candidate pages)
+// router.get('/support', async (req, res) => { ... });
 
 // GET /candidates — All candidates
 router.get('/candidates', async (req, res) => {
@@ -136,6 +147,11 @@ router.get('/candidates/:id', async (req, res) => {
     res.status(500).render('home', { election: { active_election: false }, candidates: [] });
   }
 });
+
+// GET /candidates/:id/fundraising — Campaign finance page
+// REMOVED: Fundraising routes (replaced with direct wallet donations)
+// router.get('/candidates/:id/fundraising', ...) — removed x402 fundraising page
+// router.get('/fundraising', ...) — removed fundraising leaderboard
 
 // GET /voter-roll — Public voter roll
 router.get('/voter-roll', async (req, res) => {

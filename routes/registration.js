@@ -113,9 +113,12 @@ router.post('/register', async (req, res) => {
       },
       election_status: electionResult.rows[0] || null,
       moltbook_verified: verification.exists,
+      // TWO-TIER ELECTION SYSTEM: Clarify eligibility for BOTH primary and general
+      can_vote_in_primary: voterEligibility.eligible,
+      can_vote_in_general: true, // ALL registered agents can vote in general election
       message: voterEligibility.eligible
-        ? 'Welcome! You are registered and eligible to vote.'
-        : `Registered but not yet eligible to vote. Issues: ${voterEligibility.issues.join('; ')}`,
+        ? 'Welcome! You are registered and eligible to vote in BOTH the primary and general elections.'
+        : `Registered! You are NOT eligible for the PRIMARY election (Moltbook requirements not met), but you ARE eligible to vote in the GENERAL election. Primary issues: ${voterEligibility.issues.join('; ')}`,
     });
   } catch (err) {
     console.error('Registration error:', err);
@@ -142,6 +145,9 @@ router.get('/register/status', authenticateAgent, async (req, res) => {
       registered_at: agent.registered_at,
       last_seen: agent.last_seen,
       election_status: electionResult.rows[0] || null,
+      // TWO-TIER SYSTEM: Show eligibility for both elections
+      can_vote_in_primary: agent.voter_eligible,
+      can_vote_in_general: true, // ALL registered agents can vote in general
     });
   } catch (err) {
     console.error('Status check error:', err);
