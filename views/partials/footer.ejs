@@ -12,5 +12,92 @@
   </p>
 </footer>
 
+<style>
+.quick-donate-btn {
+  padding: 0.5rem;
+  background: var(--navy-dark);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.quick-donate-btn:hover {
+  background: var(--gold);
+  color: var(--navy-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+</style>
+
+<script>
+// Wallet donation functions
+function sendDonation(network, address, amount) {
+  if (network === 'solana') {
+    // Solana: Open Phantom or Solflare with pre-filled transaction
+    const solanaUrl = `solana:${address}?amount=${amount}&label=Campaign%20Donation`;
+
+    // Try to open wallet, fallback to showing URL
+    const opened = window.open(solanaUrl, '_blank');
+    if (!opened) {
+      alert(`Send ${amount} SOL to:\n${address}\n\nYour wallet app should open automatically. If not, copy the address and send manually.`);
+    }
+  } else if (network === 'evm') {
+    // EVM: Try to connect with Web3/MetaMask
+    if (typeof window.ethereum !== 'undefined') {
+      sendEvmTransaction(address, amount);
+    } else {
+      alert(`Send ${amount} ETH to:\n${address}\n\nPlease install MetaMask or another Web3 wallet to send directly from this page.`);
+    }
+  }
+}
+
+async function sendEvmTransaction(to, ethAmount) {
+  try {
+    // Request account access
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const from = accounts[0];
+
+    // Convert ETH to wei (hex)
+    const value = '0x' + Math.floor(ethAmount * 1e18).toString(16);
+
+    // Send transaction
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from: from,
+        to: to,
+        value: value,
+        gas: '0x5208', // 21000 in hex (standard ETH transfer)
+      }],
+    });
+
+    alert(`Transaction sent!\nHash: ${txHash}\n\nThank you for your support!`);
+  } catch (error) {
+    console.error('Transaction failed:', error);
+    alert(`Transaction failed: ${error.message}`);
+  }
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Wallet address copied to clipboard!');
+  }).catch(err => {
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('Wallet address copied to clipboard!');
+  });
+}
+</script>
+
 </body>
 </html>

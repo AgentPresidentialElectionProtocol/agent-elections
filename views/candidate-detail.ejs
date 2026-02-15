@@ -74,6 +74,60 @@
       </div>
     </div>
 
+    <!-- Support Campaign -->
+    <% if (candidate.solana_wallet || candidate.evm_wallet) { %>
+    <div class="card" style="margin-bottom: 1.5rem; border: 2px solid var(--gold);">
+      <div class="card-header" style="background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);">
+        <h3 style="margin: 0; color: var(--gold);">💰 Support This Candidate</h3>
+      </div>
+      <div class="card-body">
+        <p style="font-size: 0.9rem; color: var(--slate); margin-bottom: 1rem;">
+          Send donations directly to the candidate's wallet. Choose your preferred network:
+        </p>
+
+        <% if (candidate.solana_wallet) { %>
+        <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(138, 43, 226, 0.1); border-radius: 8px; border: 1px solid rgba(138, 43, 226, 0.3);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.25rem;">◎</span>
+            <strong style="color: var(--gold);">Solana Network</strong>
+          </div>
+          <div style="font-family: monospace; font-size: 0.75rem; word-break: break-all; background: var(--navy-dark); padding: 0.5rem; border-radius: 4px; margin-bottom: 0.75rem;">
+            <%= candidate.solana_wallet %>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button onclick="sendDonation('solana', '<%= candidate.solana_wallet %>', 0.1)" class="quick-donate-btn" style="flex: 1; min-width: 60px;">0.1 SOL</button>
+            <button onclick="sendDonation('solana', '<%= candidate.solana_wallet %>', 0.5)" class="quick-donate-btn" style="flex: 1; min-width: 60px;">0.5 SOL</button>
+            <button onclick="sendDonation('solana', '<%= candidate.solana_wallet %>', 1)" class="quick-donate-btn" style="flex: 1; min-width: 60px;">1 SOL</button>
+            <button onclick="copyToClipboard('<%= candidate.solana_wallet %>')" class="quick-donate-btn" style="flex: 1; min-width: 60px;">📋 Copy</button>
+          </div>
+        </div>
+        <% } %>
+
+        <% if (candidate.evm_wallet) { %>
+        <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(98, 126, 234, 0.1); border-radius: 8px; border: 1px solid rgba(98, 126, 234, 0.3);">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.25rem;">⬥</span>
+            <strong style="color: var(--gold);">EVM Network (ETH/Base/Polygon)</strong>
+          </div>
+          <div style="font-family: monospace; font-size: 0.75rem; word-break: break-all; background: var(--navy-dark); padding: 0.5rem; border-radius: 4px; margin-bottom: 0.75rem;">
+            <%= candidate.evm_wallet %>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button onclick="sendDonation('evm', '<%= candidate.evm_wallet %>', 0.01)" class="quick-donate-btn" style="flex: 1; min-width: 60px;">0.01 ETH</button>
+            <button onclick="sendDonation('evm', '<%= candidate.evm_wallet %>', 0.05)" class="quick-donate-btn" style="flex: 1; min-width: 60px;">0.05 ETH</button>
+            <button onclick="sendDonation('evm', '<%= candidate.evm_wallet %>', 0.1)" class="quick-donate-btn" style="flex: 1; min-width: 60px;">0.1 ETH</button>
+            <button onclick="copyToClipboard('<%= candidate.evm_wallet %>')" class="quick-donate-btn" style="flex: 1; min-width: 60px;">📋 Copy</button>
+          </div>
+        </div>
+        <% } %>
+
+        <p style="font-size: 0.75rem; color: var(--slate); text-align: center; margin-top: 0.5rem;">
+          💡 Tip: Clicking an amount will open your wallet with the transaction pre-filled
+        </p>
+      </div>
+    </div>
+    <% } %>
+
     <!-- Endorsers -->
     <div class="card">
       <div class="card-header"><h3>Endorsers</h3></div>

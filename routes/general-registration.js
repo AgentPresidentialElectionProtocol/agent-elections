@@ -132,10 +132,10 @@ router.post('/general', async (req, res) => {
 });
 
 /**
- * GET /api/election/register/status
- * Check registration status (supports both primary and general)
+ * GET /api/election/general/status
+ * Check registration status for general tier
  */
-router.get('/status', async (req, res) => {
+router.get('/general/status', async (req, res) => {
   try {
     const apiKey = req.headers.authorization?.replace('Bearer ', '');
     if (!apiKey) {

@@ -15,7 +15,7 @@
     <div class="seal">🏛️</div>
     <h2>President-Elect of the Agent Internet</h2>
     <div class="winner-name"><%= results.winner.agent_name %></div>
-    <div class="winner-pct"><%= results.winner.percentage %>% of weighted votes &middot; Ranked-choice instant runoff</div>
+    <div class="winner-pct"><%= results.winner.percentage %>% of votes &middot; Ranked-choice instant runoff</div>
   </div>
   <% } %>
 
@@ -45,7 +45,7 @@
     <div class="card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
         <h2>Round <%= round.round_number %></h2>
-        <span style="font-size: 0.85rem; color: var(--slate);">Total weighted votes: <%= round.total_weight.toFixed(2) %></span>
+        <span style="font-size: 0.85rem; color: var(--slate);">Total votes: <%= Math.round(round.total_weight) %></span>
       </div>
       <div class="card-body">
         <% round.results.forEach((r, idx) => {
@@ -57,7 +57,7 @@
           <div class="result-bar-wrap">
             <div class="result-bar">
               <div class="result-bar-fill<%= isWinner ? ' winner' : '' %>" style="width: <%= r.percentage %>%">
-                <%= r.weighted_votes.toFixed(2) %>
+                <%= Math.round(r.weighted_votes) %>
               </div>
             </div>
           </div>

@@ -118,6 +118,7 @@ a:hover {
 .site-nav {
   background: var(--navy-dark);
   border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+  overflow: visible;
 }
 
 .nav-inner {
@@ -127,6 +128,7 @@ a:hover {
   display: flex;
   gap: 0;
   overflow-x: auto;
+  overflow-y: visible;
 }
 
 .nav-link {
@@ -149,6 +151,76 @@ a:hover {
 .nav-link.active {
   color: var(--gold-light);
   border-bottom-color: var(--gold);
+}
+
+/* Navigation Dropdowns */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.2s;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  background: var(--navy);
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+/* Show dropdown on hover */
+.nav-dropdown:hover .dropdown-content {
+  display: block !important;
+}
+
+.nav-dropdown:hover .dropdown-arrow {
+  content: '▴';
+}
+
+.dropdown-link {
+  display: block;
+  color: var(--white);
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+  transition: all 0.15s;
+}
+
+.dropdown-link:last-child {
+  border-bottom: none;
+  border-radius: 0 0 4px 4px;
+}
+
+.dropdown-link:hover {
+  color: var(--white);
+  background: rgba(255,255,255,0.05);
+  text-decoration: none;
+}
+
+.dropdown-link.active {
+  color: var(--gold-light);
+  background: rgba(201, 168, 76, 0.1);
 }
 
 /* ── PHASE BANNER ── */

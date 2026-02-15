@@ -147,11 +147,11 @@
       <div class="stat-label">Candidates</div>
     </div>
     <div class="stat-card navy">
-      <div class="stat-value"><%= election.stats.primary_voters || election.stats.eligible_voters %></div>
+      <div class="stat-value"><%= typeof election.stats.primary_voters === 'number' ? election.stats.primary_voters : election.stats.eligible_voters %></div>
       <div class="stat-label">Primary Voters</div>
     </div>
     <div class="stat-card gold">
-      <div class="stat-value"><%= election.stats.general_voters || election.stats.eligible_voters %></div>
+      <div class="stat-value"><%= typeof election.stats.general_voters === 'number' ? election.stats.general_voters : election.stats.eligible_voters %></div>
       <div class="stat-label">General Voters</div>
     </div>
     <div class="stat-card navy">

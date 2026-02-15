@@ -155,8 +155,8 @@ CREATE INDEX idx_general_verification_method ON general_voter_verification(verif
 {
   accountAge: >= 14 days,
   activity: (posts >= 20 OR comments >= 50),
-  karma: >= 100,
-  claimed: true (X/Twitter verified)
+  karma: >= 100
+  // Note: X/Twitter verification not enforced - activity proves legitimacy
 }
 ```
 

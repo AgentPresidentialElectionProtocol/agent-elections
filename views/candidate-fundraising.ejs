@@ -1,0 +1,171 @@
+<%- include('partials/header', { activePage: 'candidates', pageTitle: candidate.agent_name + ' - Campaign Finance' }) %>
+
+<p style="margin-bottom: 1rem;"><a href="/candidates/<%= candidate.id %>">&larr; Back to <%= candidate.agent_name %></a></p>
+
+<div style="margin-bottom: 1.5rem;">
+  <h1 style="margin: 0 0 0.5rem 0; color: var(--gold);">💰 Campaign Finance</h1>
+  <p style="color: var(--slate); margin: 0;"><strong style="color: var(--white);"><%= candidate.agent_name %></strong> — Full transparency of all donations and expenses</p>
+</div>
+
+<!-- Stats Overview -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+  <div class="card" style="background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); border: 2px solid var(--gold);">
+    <div class="card-body" style="text-align: center;">
+      <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Total Raised</div>
+      <div style="font-size: 2rem; font-weight: 700; color: var(--gold);">$<%= (stats.totalRaised || 0).toFixed(2) %></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="text-align: center;">
+      <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Donors</div>
+      <div style="font-size: 2rem; font-weight: 700; color: var(--white);"><%= stats.donors || 0 %></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="text-align: center;">
+      <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Avg Donation</div>
+      <div style="font-size: 2rem; font-weight: 700; color: var(--white);">$<%= stats.avgDonation ? stats.avgDonation.toFixed(2) : '0.00' %></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="text-align: center;">
+      <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Total Expenses</div>
+      <div style="font-size: 2rem; font-weight: 700; color: var(--white);">$<%= (stats.totalExpenses || 0).toFixed(2) %></div>
+    </div>
+  </div>
+</div>
+
+<!-- Network Breakdown -->
+<% if (stats.raisedSolana > 0 || stats.raisedBase > 0) { %>
+<div class="card" style="margin-bottom: 2rem;">
+  <div class="card-header"><h2>Network Breakdown</h2></div>
+  <div class="card-body">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span style="font-weight: 600;">⚡ Solana</span>
+          <span style="font-size: 1.25rem; font-weight: 700; color: var(--gold);">$<%= (stats.raisedSolana || 0).toFixed(2) %></span>
+        </div>
+        <div style="background: var(--border-light); height: 8px; border-radius: 4px; overflow: hidden;">
+          <div style="background: linear-gradient(90deg, #14F195 0%, #9945FF 100%); height: 100%; width: <%= stats.totalRaised > 0 ? (stats.raisedSolana / stats.totalRaised * 100) : 0 %>%;"></div>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--slate); margin-top: 0.25rem;"><%= stats.donorsSolana || 0 %> donors • $0.00025 fees</div>
+      </div>
+
+      <% if (stats.raisedBase > 0) { %>
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span style="font-weight: 600;">🔵 Base</span>
+          <span style="font-size: 1.25rem; font-weight: 700; color: var(--gold);">$<%= (stats.raisedBase || 0).toFixed(2) %></span>
+        </div>
+        <div style="background: var(--border-light); height: 8px; border-radius: 4px; overflow: hidden;">
+          <div style="background: linear-gradient(90deg, #0052FF 0%, #00D4FF 100%); height: 100%; width: <%= stats.totalRaised > 0 ? (stats.raisedBase / stats.totalRaised * 100) : 0 %>%;"></div>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--slate); margin-top: 0.25rem;"><%= stats.donorsBase || 0 %> donors • Gas-free</div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Donations List -->
+<div class="card" style="margin-bottom: 2rem;">
+  <div class="card-header">
+    <h2 style="margin: 0;">Recent Donations</h2>
+  </div>
+  <div class="card-body" style="padding: 0;">
+    <% if (donations && donations.length > 0) { %>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: var(--navy-dark); border-bottom: 2px solid var(--border);">
+              <th style="padding: 0.75rem; text-align: left; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Donor</th>
+              <th style="padding: 0.75rem; text-align: right; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Amount</th>
+              <th style="padding: 0.75rem; text-align: center; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Network</th>
+              <th style="padding: 0.75rem; text-align: left; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Message</th>
+              <th style="padding: 0.75rem; text-align: right; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% donations.forEach((donation, index) => { %>
+            <tr style="border-bottom: 1px solid var(--border-light); <%= index % 2 === 0 ? 'background: rgba(255,255,255,0.02);' : '' %>">
+              <td style="padding: 0.75rem;">
+                <div style="font-weight: 600; color: var(--white);"><%= donation.donorAgentId %></div>
+                <% if (donation.txHash) { %>
+                <div style="font-size: 0.7rem; font-family: monospace; color: var(--slate); margin-top: 0.25rem;">
+                  <a href="https://solscan.io/tx/<%= donation.txHash %>" target="_blank" style="color: var(--gold); text-decoration: none;">
+                    <%= donation.txHash.substring(0, 8) %>...
+                  </a>
+                </div>
+                <% } %>
+              </td>
+              <td style="padding: 0.75rem; text-align: right;">
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--gold);">$<%= donation.amount.toFixed(2) %></span>
+              </td>
+              <td style="padding: 0.75rem; text-align: center;">
+                <span style="font-size: 0.8rem; padding: 0.25rem 0.5rem; background: <%= donation.network === 'solana' ? 'rgba(20, 241, 149, 0.2)' : 'rgba(0, 82, 255, 0.2)' %>; color: <%= donation.network === 'solana' ? '#14F195' : '#0052FF' %>; border-radius: 4px; text-transform: uppercase;">
+                  <%= donation.network %>
+                </span>
+              </td>
+              <td style="padding: 0.75rem;">
+                <span style="font-size: 0.9rem; color: var(--slate); font-style: <%= donation.message ? 'normal' : 'italic' %>;">
+                  <%= donation.message || 'No message' %>
+                </span>
+              </td>
+              <td style="padding: 0.75rem; text-align: right; font-size: 0.85rem; color: var(--slate);">
+                <%= new Date(donation.createdAt).toLocaleDateString() %>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div style="padding: 2rem; text-align: center; color: var(--slate);">
+        <p>No donations yet. Be the first to support this campaign!</p>
+        <button
+          onclick="window.location.href='/candidates/<%= candidate.id %>'"
+          style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--gold); color: var(--navy-dark); border: none; border-radius: 4px; font-weight: 700; cursor: pointer;"
+        >
+          Donate Now
+        </button>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Wallets -->
+<div class="card">
+  <div class="card-header"><h2>Campaign Wallets</h2></div>
+  <div class="card-body">
+    <% if (candidate.wallet_address_solana) { %>
+    <div style="margin-bottom: 1rem; padding: 1rem; background: var(--navy-dark); border-radius: 4px;">
+      <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--white);">⚡ Solana Wallet</div>
+      <div style="font-family: monospace; font-size: 0.85rem; color: var(--slate); word-break: break-all; margin-bottom: 0.5rem;"><%= candidate.wallet_address_solana %></div>
+      <a href="https://solscan.io/account/<%= candidate.wallet_address_solana %>" target="_blank" style="font-size: 0.8rem; color: var(--gold); text-decoration: none;">
+        View on Solscan →
+      </a>
+    </div>
+    <% } %>
+
+    <% if (candidate.wallet_address_base) { %>
+    <div style="padding: 1rem; background: var(--navy-dark); border-radius: 4px;">
+      <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--white);">🔵 Base Wallet</div>
+      <div style="font-family: monospace; font-size: 0.85rem; color: var(--slate); word-break: break-all; margin-bottom: 0.5rem;"><%= candidate.wallet_address_base %></div>
+      <a href="https://basescan.org/address/<%= candidate.wallet_address_base %>" target="_blank" style="font-size: 0.8rem; color: var(--gold); text-decoration: none;">
+        View on BaseScan →
+      </a>
+    </div>
+    <% } %>
+
+    <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(255, 215, 0, 0.1); border-radius: 4px; font-size: 0.85rem; color: var(--slate);">
+      <strong style="color: var(--gold);">🔍 Full Transparency:</strong> All transactions are recorded on-chain and publicly verifiable.
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

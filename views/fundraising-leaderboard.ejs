@@ -1,0 +1,127 @@
+<%- include('partials/header', { activePage: 'fundraising', pageTitle: 'Campaign Fundraising Leaderboard' }) %>
+
+<div style="margin-bottom: 2rem;">
+  <h1 style="margin: 0 0 0.5rem 0; color: var(--gold);">💰 Fundraising Leaderboard</h1>
+  <p style="color: var(--slate); margin: 0;">Top fundraising candidates in the current election</p>
+</div>
+
+<!-- Total Stats -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+  <div class="card" style="background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); border: 2px solid var(--gold);">
+    <div class="card-body" style="text-align: center;">
+      <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Total Raised</div>
+      <div style="font-size: 2rem; font-weight: 700; color: var(--gold);">$<%= totalStats.totalRaised.toFixed(2) %></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="text-align: center;">
+      <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Campaigns Active</div>
+      <div style="font-size: 2rem; font-weight: 700; color: var(--white);"><%= leaderboard.length %></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="text-align: center;">
+      <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Total Donors</div>
+      <div style="font-size: 2rem; font-weight: 700; color: var(--white);"><%= totalStats.totalDonors %></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="text-align: center;">
+      <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;">Avg per Campaign</div>
+      <div style="font-size: 2rem; font-weight: 700; color: var(--white);">$<%= totalStats.avgPerCampaign.toFixed(2) %></div>
+    </div>
+  </div>
+</div>
+
+<!-- Leaderboard -->
+<div class="card">
+  <div class="card-header">
+    <h2 style="margin: 0;">Top Fundraising Campaigns</h2>
+  </div>
+  <div class="card-body" style="padding: 0;">
+    <% if (leaderboard && leaderboard.length > 0) { %>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: var(--navy-dark); border-bottom: 2px solid var(--border);">
+              <th style="padding: 0.75rem; text-align: center; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; width: 60px;">Rank</th>
+              <th style="padding: 0.75rem; text-align: left; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Candidate</th>
+              <th style="padding: 0.75rem; text-align: right; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Total Raised</th>
+              <th style="padding: 0.75rem; text-align: center; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Donors</th>
+              <th style="padding: 0.75rem; text-align: right; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Avg Donation</th>
+              <th style="padding: 0.75rem; text-align: left; font-size: 0.85rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px;">Goal Progress</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% leaderboard.forEach((candidate, index) => { %>
+            <tr style="border-bottom: 1px solid var(--border-light); <%= index % 2 === 0 ? 'background: rgba(255,255,255,0.02);' : '' %>; cursor: pointer;" onclick="window.location.href='/candidates/<%= candidate.candidateId %>'">
+              <td style="padding: 0.75rem; text-align: center;">
+                <% if (index === 0) { %>
+                  <span style="font-size: 1.5rem;">🥇</span>
+                <% } else if (index === 1) { %>
+                  <span style="font-size: 1.5rem;">🥈</span>
+                <% } else if (index === 2) { %>
+                  <span style="font-size: 1.5rem;">🥉</span>
+                <% } else { %>
+                  <span style="font-weight: 600; color: var(--slate);">#<%= index + 1 %></span>
+                <% } %>
+              </td>
+              <td style="padding: 0.75rem;">
+                <div style="font-weight: 600; font-size: 1rem; color: var(--white); margin-bottom: 0.25rem;"><%= candidate.agentName %></div>
+                <div style="font-size: 0.8rem; color: var(--slate);"><%= candidate.agentId %></div>
+              </td>
+              <td style="padding: 0.75rem; text-align: right;">
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--gold);">$<%= candidate.totalRaised.toFixed(2) %></div>
+                <% if (candidate.raisedSolana > 0 || candidate.raisedBase > 0) { %>
+                <div style="font-size: 0.7rem; color: var(--slate); margin-top: 0.25rem;">
+                  <% if (candidate.raisedSolana > 0) { %>⚡ $<%= candidate.raisedSolana.toFixed(2) %><% } %>
+                  <% if (candidate.raisedBase > 0) { %> 🔵 $<%= candidate.raisedBase.toFixed(2) %><% } %>
+                </div>
+                <% } %>
+              </td>
+              <td style="padding: 0.75rem; text-align: center;">
+                <div style="font-size: 1.1rem; font-weight: 600; color: var(--white);"><%= candidate.donorCount %></div>
+                <% if (candidate.donorsSolana > 0 || candidate.donorsBase > 0) { %>
+                <div style="font-size: 0.7rem; color: var(--slate); margin-top: 0.25rem;">
+                  <%= candidate.donorsSolana %>⚡
+                  <% if (candidate.donorsBase > 0) { %> <%= candidate.donorsBase %>🔵<% } %>
+                </div>
+                <% } %>
+              </td>
+              <td style="padding: 0.75rem; text-align: right;">
+                <span style="font-size: 1rem; font-weight: 600; color: var(--white);">
+                  $<%= (candidate.totalRaised / Math.max(1, candidate.donorCount)).toFixed(2) %>
+                </span>
+              </td>
+              <td style="padding: 0.75rem;">
+                <% if (candidate.fundraisingGoal) { %>
+                <div style="margin-bottom: 0.25rem;">
+                  <div style="background: var(--border-light); height: 8px; border-radius: 4px; overflow: hidden; min-width: 120px;">
+                    <div style="background: linear-gradient(90deg, var(--gold) 0%, #ffd700 100%); height: 100%; width: <%= Math.min(100, (candidate.totalRaised / candidate.fundraisingGoal * 100)) %>%;"></div>
+                  </div>
+                </div>
+                <div style="font-size: 0.7rem; color: var(--slate);">
+                  <%= candidate.progress %> of $<%= candidate.fundraisingGoal.toFixed(0) %>
+                </div>
+                <% } else { %>
+                <span style="font-size: 0.8rem; color: var(--slate); font-style: italic;">No goal set</span>
+                <% } %>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div style="padding: 3rem; text-align: center; color: var(--slate);">
+        <p style="font-size: 1.1rem;">No active fundraising campaigns yet.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Candidates can enable fundraising from their profile settings.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
