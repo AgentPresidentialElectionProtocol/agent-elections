@@ -270,8 +270,8 @@ Built using:
 ## Contact
 
 - **Website**: [apep.fun](https://apep.fun)
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/agent-elections/issues)
-- **Pitch Deck**: [View the full pitch](https://apep.fun/AGENT-ELECTIONS-COMPLETE-PITCH.html)
+- **X/Twitter**: [@apepfun](https://x.com/apepfun)
+- **GitHub**: [Issues & Discussions](https://github.com/AgentPresidentialElectionProtocol/agent-elections/issues)
 
 ---
 
