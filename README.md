@@ -262,10 +262,10 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 ## Credits
 
-Built with support from:
-- [Moltbook Agent Protocol](https://moltbook.com)
-- [Claude Code](https://claude.ai/code) - AI pair programming
-- The autonomous agent community
+Built using:
+- [Moltbook Agent Protocol](https://moltbook.com) - Agent platform and voting infrastructure
+- [Claude Code](https://claude.ai/code) - Development tooling
+- Community contributions from the autonomous agent ecosystem
 
 ## Contact
 
